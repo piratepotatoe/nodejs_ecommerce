@@ -15,6 +15,10 @@ app.use(compression())
 
 
 // Initialize database
+
+require('./dbs/init.mongodo')
+const { countConnect } = require('./helpers/check.connect')
+countConnect()
 // Example: databaseConnection();
 
 

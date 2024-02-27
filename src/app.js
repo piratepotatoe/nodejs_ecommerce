@@ -20,13 +20,7 @@ checkOverload();
 countConnect();
 
 // Initialize routers
-app.get('/', (req, res, next) => {
-    const strCompress = 'hello daring fox';
-    return res.status(200).json({
-        message: 'Welcome Daring Fox',
-        metadata: strCompress.repeat(10000)
-    });
-});
+app.use('/',require('./routers'))
 
 // Handling errors
 // Example: app.use(errorHandler);

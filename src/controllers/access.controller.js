@@ -8,7 +8,7 @@ class AccessController {
             201 Created
             */
             console.log(`[P]::signUp::`, req.body)
-            return res.status(200).json({
+            return res.status(201).json({
                 code: '20001', // 20001 là định nghĩa riêng
                 metadata: { userid: 1 }
 

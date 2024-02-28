@@ -2,17 +2,6 @@
 
 //level 1
 
-// const config = {
-//     app:{
-//         port:3000
-//     },
-//     db:{
-//         host:'localhost',
-//         port:27017,
-//         name:'db'
-//     }
-// }
-
 const dev = {
     app:{
         port:process.env.DEV_APP_PORT || 3052

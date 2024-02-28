@@ -1,5 +1,4 @@
 'use strict'
-
 const mongoose = require('mongoose')
 const { db: { host, name, port } } = require('../configs/config.mongodb')
 console.log(host, name, port)

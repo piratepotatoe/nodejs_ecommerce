@@ -7,7 +7,7 @@ const _SECONDS = 5000;
 // Count connection
 const countConnect = () => {
     const numConnection = mongoose.connections.length;
-    console.log(`Number of connection: ${numConnection}`);
+    //console.log(`Number of connection: ${numConnection}`);
 };
 
 // Check overload connection - server bị quá tải

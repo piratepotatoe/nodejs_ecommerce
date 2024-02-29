@@ -1,3 +1,12 @@
 ### signup
-@url_dev = http://localhost:3056/v1/api/
-POST {{url_dev}}/shop/signup
+@url_dev = http://localhost:3056/v1/api
+
+POST {{url_dev}}/shop/signup HTTP/1.1
+Content-Type: application/json
+Content-Length: 94
+
+{
+    "name":"DaringFox",
+    "email":"xxxx@gmail.com",
+    "password":"12345abc"
+}

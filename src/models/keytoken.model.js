@@ -9,8 +9,6 @@ var keyTokenSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         required: true,
-        unique: true,
-        index: true,
         ref: 'Shop'
     },
     publicKey: {
@@ -20,11 +18,12 @@ var keyTokenSchema = new Schema({
     , refreshToken: {
         type: Array,
         default: []
-    }}
-    ,{
+    }
+}
+    , {
         collection: COLLECTION_NAME,
         timestamps: true
-    
-})
+
+    })
 
 module.exports = model(DOCUMENT_NAME, keyTokenSchema);

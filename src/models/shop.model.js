@@ -1,7 +1,7 @@
 'use strict'
 
 //!dmgb
-const { model: Schema, Types } = require('mongoose');
+const { model, Schema, Types} = require('mongoose');
 const DOCUMENT_NAME = 'Shop'
 const COLLECTION_NAME = 'Shops'
 
@@ -21,7 +21,7 @@ const shopSchema = new Schema({
     }, 
     password: {
         type: String,
-        required: true,
+        required: true
     },
     status: {
         type: String,
@@ -29,7 +29,7 @@ const shopSchema = new Schema({
         default: 'inactive'
     },
     verify:{
-        type:Schema.Types.Boolean,
+        type: Schema.Types.Boolean,
         default:false
     },
     roles:{
@@ -43,4 +43,4 @@ const shopSchema = new Schema({
 });
 
 //Export the model
-module.exports = mongoose.model(DOCUMENT_NAME, shopSchema);
+module.exports = model(DOCUMENT_NAME, shopSchema);

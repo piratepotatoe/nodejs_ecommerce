@@ -2,12 +2,15 @@
 const keytokenModel = require("../models/keytoken.model")
 
 class KeyTokenService {
-    static createKeyToken = async ({userId, publicKey}) => { // Sửa tên phương thức
+    // Trong class KeyTokenService, yêu cầu 2 parameter, 1 là user id, 2 là public key, tuy nhiên,
+    // cần thêm cả private key nữa
+    static createKeyToken = async ({userId, publicKey, privateKey}) => { 
         try {
-            const publicKeyString = publicKey.toString();
+           // const publicKeyString = publicKey.toString(); 
             const tokens = await keytokenModel.create({
-                user: userId, // Sửa thành user hoặc userId tùy vào ý định
-                publicKey: publicKeyString
+                user: userId, 
+                publicKey,
+                privateKey
                 
             }); 
             return tokens ? tokens.publicKey : null

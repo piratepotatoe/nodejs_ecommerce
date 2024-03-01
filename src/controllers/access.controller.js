@@ -8,12 +8,13 @@ class AccessController {
             200 OK
             201 Created
             */
-            console.log(`[P]::signUp:: Test`, req.body)
+            console.log(`[P]::signUp::`, req.body)
+            
             return res.status(201).json(
                 await AccessService.signUp(req.body)
             )
         } catch (error) {
-            console.error('Error signing up')
+            console.error('Error signing up'+error.message)
             next(error)
         }
     }

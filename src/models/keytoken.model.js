@@ -1,6 +1,6 @@
 'use strict';
 
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose')
 
 const DOCUMENT_NAME = 'Key';
 const COLLECTION_NAME = 'Keys';
@@ -24,6 +24,6 @@ var keyTokenSchema = new Schema({
         collection: COLLECTION_NAME,
         timestamps: true
 
-    })
+    });
 
 module.exports = model(DOCUMENT_NAME, keyTokenSchema);

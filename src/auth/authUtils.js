@@ -2,9 +2,11 @@
 
 const JWT = require('jsonwebtoken');
 
-const createTokenPair = async (payload, privateKey, publicKey) => {
+const createTokenPair = async (payload, publicKey, privateKey) => {
+
     try {
         // Note: JWT.sign is used synchronously here
+        
         const accessToken = await JWT.sign(payload, privateKey, {
             algorithm: 'RS256',
             expiresIn: '2 days'
@@ -27,11 +29,12 @@ const createTokenPair = async (payload, privateKey, publicKey) => {
 
         return { accessToken, refreshToken };
     } catch (error) {
-        console.error(`Error creating token pair: ${error}`);
+        console.error(`Error creating token pair: ${error.message}`);
+       
         // Ensure to handle this error appropriately in production code
         return null; // or throw new Error(error);
     }
-};
+}
 
 module.exports = {
     createTokenPair

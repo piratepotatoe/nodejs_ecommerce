@@ -3,10 +3,10 @@
 
 POST {{url_dev}}/shop/signup HTTP/1.1
 Content-Type: application/json
-Content-Length: 94
+//Content-Length: 94
 
 {
-    "name":"DaringFox",
-    "email":"xxxx@gmail.com",
+    "name":"user7",
+    "email":"user7@gmail.com",
     "password":"12345abc"
 }

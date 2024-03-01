@@ -27,21 +27,19 @@ class AccessService {
                     message: 'Email already exist'
                 }
             }
+
             const passwordHash = await bcrypt.hash(password, 10)
 
-            const newShop = await shopModel.create(
-                {
-                    name, email, password: passwordHash, roles: [RoleShop.SHOP]
-                }
-            )
-            console.log('chưa chạy vào đây');
+            const newShop = await shopModel.create({name, email, password: passwordHash, roles: [RoleShop.SHOP]})
+
+            console.log(name, email, passwordHash);
+
             if (newShop) {
                 // create private key and public key for access
                 // create key token pair - đầu tiên sẽ tạo ra 1 cặp tokens
                 // privacy key để sign token, public key để verify token
-                const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
-                    modulusLength: 4096
-                })
+                const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa',{modulusLength:4096})
+
                 console.log({ privateKey, publicKey }); // if exist, save to collection keystore
 
                 const publicKeyString = await KeyTokenService.createKeyToken({
@@ -57,8 +55,11 @@ class AccessService {
                     }
                 }
                 // create token pair 
+           
                 const tokens = await createTokenPair({ userId: newShop._id, email }, publicKey, privateKey)
+
                 console.log(`Create Token Sucessfully`, tokens);
+
                 return {
                     code: 201,
                     metadata: {

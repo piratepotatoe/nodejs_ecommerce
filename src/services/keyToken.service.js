@@ -8,11 +8,14 @@ class KeyTokenService {
             const tokens = await keytokenModel.create({
                 user: userId, // Sửa thành user hoặc userId tùy vào ý định
                 publicKey: publicKeyString
-            });
-            return tokens ? publicKey : null
+                
+            }); 
+            return tokens ? publicKeyString : null
+            console.log('publicKeyString ' + publicKeyString)
+            console.log('tokens ' + tokens)
         } catch (error) {
             // Thêm xử lý lỗi
-            console.error('Error creating key token:', error);
+            console.error('Key token service -> Error creating key token:', error.message);
             return error
         }
     }

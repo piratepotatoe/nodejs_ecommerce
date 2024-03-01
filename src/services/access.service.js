@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const KeyTokenService = require("./keyToken.service")
 const { createTokenPair } = require("../auth/authUtils")
-
+const {getInfodata} = require("../utils")
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -30,7 +30,7 @@ class AccessService {
 
             const passwordHash = await bcrypt.hash(password, 10)
 
-            const newShop = await shopModel.create({name, email, password: passwordHash, roles: [RoleShop.SHOP]})
+            const newShop = await shopModel.create({ name, email, password: passwordHash, roles: [RoleShop.SHOP] })
 
             console.log(name, email, passwordHash);
 
@@ -38,7 +38,17 @@ class AccessService {
                 // create private key and public key for access
                 // create key token pair - đầu tiên sẽ tạo ra 1 cặp tokens
                 // privacy key để sign token, public key để verify token
-                const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa',{modulusLength:4096})
+                const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
+                    modulusLength: 4096,
+                    publicKeyEncoding: {
+                        type:'pkcs1',
+                        format: 'pem'
+                    },
+                    privateKeyEncoding: {
+                        type:'pkcs1',
+                        format: 'pem'
+                    }
+                })
 
                 console.log({ privateKey, publicKey }); // if exist, save to collection keystore
 
@@ -51,21 +61,24 @@ class AccessService {
                     return {
                         code: 'xxx',
                         message: 'publicKeyString error'
-                    
+
                     }
                 }
+
+                const publicKeyObject = crypto.createPublicKey(publicKeyString)
                 // create token pair 
-           
-                const tokens = await createTokenPair({ userId: newShop._id, email }, publicKey, privateKey)
+
+                const tokens = await createTokenPair({ userId: newShop._id, email }, publicKeyObject, privateKey)
 
                 console.log(`Create Token Sucessfully`, tokens);
 
                 return {
                     code: 201,
                     metadata: {
-                        shop: newShop,
-                        tokens: tokens,
-
+                        // shop: newShop,
+                        // tokens: tokens,
+                       shop: getInfodata({fields:['_id', 'email', 'name'], object: newShop}),
+                       tokens
                     }
                 }
             }
@@ -77,7 +90,7 @@ class AccessService {
 
         } catch (error) {
             return {
-            pass: password,
+                pass: password,
                 code: '546456',
                 message: "Lỗi:" + error.message,
                 status: 'error'

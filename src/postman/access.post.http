@@ -6,7 +6,7 @@ Content-Type: application/json
 //Content-Length: 94
 
 {
-    "name":"user7",
-    "email":"user7@gmail.com",
+    "name":"user2",
+    "email":"user3@gmail.com",
     "password":"12345abc"
 }

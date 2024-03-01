@@ -10,9 +10,8 @@ class KeyTokenService {
                 publicKey: publicKeyString
                 
             }); 
-            return tokens ? publicKeyString : null
-            console.log('publicKeyString ' + publicKeyString)
-            console.log('tokens ' + tokens)
+            return tokens ? tokens.publicKey : null
+            
         } catch (error) {
             // Thêm xử lý lỗi
             console.error('Key token service -> Error creating key token:', error.message);

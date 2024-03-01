@@ -23,7 +23,7 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
             if (err) {
                 console.error(`Error verifying accessToken: ${err}`);
             } else {
-                console.log(`AccessToken decoded successfully: ${JSON.stringify(decoded)}`);
+                console.log(`AccessToken decoded successfully: `, decoded);
             }
         });
 

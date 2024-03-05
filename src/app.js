@@ -26,6 +26,21 @@ countConnect();
 app.use('/',require('./routers'))
 
 // Handling errors
+//middleware error
+app.use ((req, res, next) => {
+    const error = new Error('Not Found')
+    error.status = 404
+    next(error)
+})
+// đây là function để handle error
+app.use ((error, req, res, next) => {
+    const statusCode = error.status || 500 // HTML status code
+    return res.status(statusCode).json({
+        status: 'error',
+        code: statusCode,
+        message: error.message || 'Internal Server Error'
+    })
+})
 // Example: app.use(errorHandler);
 
 module.exports = app; // Export the Express app

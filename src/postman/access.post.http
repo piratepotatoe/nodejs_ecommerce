@@ -3,7 +3,6 @@
 
 POST {{url_dev}}/shop/signup
 Content-Type: application/json
-Authorization: 'adsdsa'
 api-key:cf4b2446d475ea5b48fe8d57590de0ddba2156ed49b290ac758ee415b982aabdce98541ed9ecb02d1dfad432d67b2194eb33ad303cbf4fae85a51f1a7f630a24
 
 {

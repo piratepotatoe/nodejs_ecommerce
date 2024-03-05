@@ -6,7 +6,8 @@ const bcrypt = require('bcrypt')
 const crypto = require('node:crypto') // có thể sử dụng được từ node version 19 bằng cách khai báo như này
 const KeyTokenService = require("./keyToken.service")
 const { createTokenPair } = require("../auth/authUtils")
-const {getInfodata} = require("../utils")
+const {getInfodata} = require("../utils");
+const { BadRequestError, ConflictRequestError } = require("../core/error.response");
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -17,18 +18,15 @@ const RoleShop = {
 
 class AccessService {
     static signUp = async ({ name, email, password }) => {
-        try {
-
+        // try {
+            
             //step1: check if email exist
             const holderShop = await shopModel.findOne({ email }).lean()
 
             if (holderShop) {
-                return {
-                    code: 'xxx',
-                    message: 'Email already exist'
-                }
+                throw new ConflictRequestError('Error: Shop Already registered')
             }
-
+            
             const passwordHash = await bcrypt.hash(password, 10)
 
             const newShop = await shopModel.create({ name, email, password: passwordHash, roles: [RoleShop.SHOP] })
@@ -70,11 +68,12 @@ class AccessService {
                 })
 
                 if (!keyStore) {
-                    return {
-                        code: 'xxx',
-                        message: 'keyStore error'
+                    // return {
+                    //     code: 'xxx',
+                    //     message: 'keyStore error'
 
-                    }
+                    // }
+                    throw new BadRequestError('Error: KeyStore error')
                 }
 
                 // const publicKeyObject = crypto.createPublicKey(publicKeyString)
@@ -100,15 +99,15 @@ class AccessService {
                 metadata: null
             }
 
-        } catch (error) {
-            console.error(error);
-            return {
-                pass: password,
-                code: '546456',
-                message: "Lỗi:" + error.message,
-                status: 'error'
-            }
-        }
+        // } catch (error) {
+        //     console.error(error);
+        //     return {
+        //         pass: password,
+        //         code: '546456',
+        //         message: "Lỗi:" + error.message,
+        //         status: 'error'
+        //     }
+        // }
     }
 }
 

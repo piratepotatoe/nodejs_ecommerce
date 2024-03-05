@@ -2,13 +2,18 @@
 
 const express = require('express');
 const accessController = require('../../controllers/access.controller');
+const { asyncHandle } = require('../../auth/checkAuth');
 const router = express.Router()
 
 //Sign up
 
-// router.post('/shop/signup', ()  =>{
 
 // })
-
-router.post('/shop/signup', accessController.signUp)
+/* 
+Thông thường, khi bạn có một hàm bất đồng bộ và bạn muốn sử dụng nó trong route handler hoặc middleware, 
+bạn phải tự mình bắt các lỗi bất đồng bộ và gọi next(error)
+để chuyển lỗi đến middleware xử lý lỗi tiếp theo. Nhưng khi bạn sử dụng asyncHandle, nó sẽ tự động bắt và chuyển lỗi cho bạn, 
+làm cho mã nguồn của bạn gọn gàng và dễ đọc hơn.
+*/
+router.post('/shop/signup', asyncHandle(accessController.signUp))
 module.exports = router

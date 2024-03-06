@@ -3,10 +3,10 @@
 
 POST {{url_dev}}/shop/signup
 Content-Type: application/json
-api-key:cf4b2446d475ea5b48fe8d57590de0ddba2156ed49b290ac758ee415b982aabdce98541ed9ecb02d1dfad432d67b2194eb33ad303cbf4fae85a51f1a7f630a24
+api-key:1698f5d7ca6e1f06696da7218bad9383de59744ea6b5d05fe1ec5f03a262600445ef63714b363b8331705f09879ad0d184995948907f68b08c213ee4beb2e8fd
 
 {
-    "name":"user78",
-    "email":"user10@gmail.com",
+    "name":"user10",
+    "email":"hello6gmail.com",
     "password":"12345abc"
 }

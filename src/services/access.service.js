@@ -7,7 +7,9 @@ const crypto = require('node:crypto') // có thể sử dụng được từ nod
 const KeyTokenService = require("./keyToken.service")
 const { createTokenPair } = require("../auth/authUtils")
 const {getInfodata} = require("../utils");
-const { BadRequestError, ConflictRequestError } = require("../core/error.response");
+const { BadRequestError, ConflictRequestError, AuthFailtureError } = require("../core/error.response");
+const { findByEmail } = require("./shop.service");
+const { create } = require("lodash");
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -15,12 +17,53 @@ const RoleShop = {
     EDITOR: 'EDITOR',
     ADMIN: 'ADMIN'
 }
-
+// class này sẽ quản lý việc login, sign up, -- mọi tính năng liên quan đến việc access 
+// import những file ở trong service để chạy ở đây, tách riêng từng file service để xử lý các công việc khác nhau
+// ví dụ: login thì sẽ có service của login, sign up thì sẽ có service của sign up
+// 
 class AccessService {
+    // 14:04 https://www.youtube.com/watch?v=0O1PlClhmIc
+    /*
+    1 - Check email trong database
+    2 - match password cua người dùng nhập vào với password trong database
+    3 - tạo Access token và Refresh token và lưu vào
+    4 - Generate token
+    5 - Get data return login
+    */
+    static login = async ({email, password, refreshToken = null}) =>{
+        //Step 1: Check email trong database
+        const foundShop = await findByEmail({email})
+        if(!foundShop) throw new BadRequestError('Shop not registered');
+
+        //Step2: Check password trong database
+        const match =  bcrypt.compare(password, foundShop.password)
+        if(!match) throw new AuthFailtureError('Authentication error')
+
+        //Step3: Create Public key and private key
+        const privateKey = crypto.randomBytes(64).toString('hex')
+        const publicKey = crypto.randomBytes(64).toString('hex');
+        
+        //Step4: Create Access token and Refresh token
+        const {_id: userId} = foundShop
+
+        const tokens = await createTokenPair({userId, email}, publicKey, privateKey)
+        // save private key and public key 
+        await KeyTokenService.createKeyToken({
+            userId, publicKey, privateKey,  
+            refreshToken: tokens.refreshToken
+            
+        })
+        // return khi login thành công
+        return {
+            shop: getInfodata({fields: ['_id', 'name', 'email'], object:foundShop}),
+            tokens
+        }
+    } 
+
     static signUp = async ({ name, email, password }) => {
         // try {
             
-            //step1: check if email exist
+            //step1: check if email exist   
             const holderShop = await shopModel.findOne({ email }).lean()
 
             if (holderShop) {

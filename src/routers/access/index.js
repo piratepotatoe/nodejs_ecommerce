@@ -2,8 +2,8 @@
 
 const express = require('express');
 const accessController = require('../../controllers/access.controller');
-const { asyncHandle } = require('../../auth/checkAuth');
 const router = express.Router()
+const { asyncHandle } = require('../../auth/checkAuth');
 
 //Sign up
 
@@ -16,4 +16,5 @@ bạn phải tự mình bắt các lỗi bất đồng bộ và gọi next(error
 làm cho mã nguồn của bạn gọn gàng và dễ đọc hơn.
 */
 router.post('/shop/signup', asyncHandle(accessController.signUp))
+router.post('/shop/login', asyncHandle(accessController.login))
 module.exports = router

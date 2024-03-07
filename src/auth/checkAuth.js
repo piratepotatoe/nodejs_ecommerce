@@ -4,7 +4,7 @@ const { request } = require("express");
 const { findById } = require("../services/apikey.service");
 
 const HEADER = {
-    API_KEY: 'api-key',
+    API_KEY: 'x-api-key',
     AUTHORIZATION: 'authorization'
 }
 const apiKey = async (req, res, next) => {
@@ -17,7 +17,7 @@ const apiKey = async (req, res, next) => {
             })
         }
         // check objectKey
-        console.log('object', key);
+        // console.log('object', key);
         const objKey = await findById(key)
         if (!objKey) {
             return res.status(403).json({

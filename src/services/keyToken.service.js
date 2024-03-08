@@ -1,11 +1,14 @@
 'use strict';
-const keytokenModel = require("../models/keytoken.model")
+const keytokenModel =  require('../models/keytoken.model')
+// const { Types } = require('mongoose')
+const { Types: { ObjectId } } = require('mongoose')
 
 class KeyTokenService {
     // Trong class KeyTokenService, yêu cầu 2 parameter, 1 là user id, 2 là public key, tuy nhiên,
     // cần thêm cả private key nữa
     static createKeyToken = async ({userId, publicKey, privateKey, refreshToken}) => { 
         try {
+
             const filter = {user: userId}, 
             update ={
                 publicKey,
@@ -27,6 +30,22 @@ class KeyTokenService {
             return error
         }
     }
+
+    //  static findByUserId = async (userId) => {
+    //     // nhận param là userId -> dùng findOne để đi tìm
+    //     return await keytokenModel.findOne({user: Types.ObjectId(userId)}).lean()
+    //  }
+
+     static findByUserId = async (userId) => {
+        return await keyTokenModel.findOne({ user: new ObjectId(userId) }).lean();
+    }
+
+    static removeKeyById = async ({id}) => {
+        return await keyTokenModel.deleteOne({ _id: new ObjectId(id) });
+    }
+   
+     
+    
 }
 
 module.exports = KeyTokenService;

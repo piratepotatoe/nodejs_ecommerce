@@ -60,7 +60,7 @@ Nếu hàm fn đó phát sinh lỗi trong quá trình thực thi (ví dụ như 
 Thông thường, khi bạn có một hàm bất đồng bộ và bạn muốn sử dụng nó trong route handler hoặc middleware, bạn phải tự mình bắt các lỗi bất đồng bộ và gọi next(error) để chuyển lỗi đến middleware xử lý lỗi tiếp theo. Nhưng khi bạn sử dụng asyncHandle, nó sẽ tự động bắt và chuyển lỗi cho bạn, làm cho mã nguồn của bạn gọn gàng và dễ đọc hơn.
 
 */
-const asyncHandle = fn =>{
+const asyncHandler = fn =>{
     return (req, res, next) =>{
         fn(req, res, next).catch(next)
     }
@@ -69,5 +69,5 @@ const asyncHandle = fn =>{
 module.exports = {
     apiKey,
     permission,
-    asyncHandle
+    asyncHandler
 }

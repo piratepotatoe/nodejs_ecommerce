@@ -3,7 +3,9 @@
 const express = require('express');
 const accessController = require('../../controllers/access.controller');
 const router = express.Router()
-const { asyncHandle } = require('../../auth/checkAuth');
+const { asyncHandler } = require('../../auth/checkAuth');
+const { authenticationUtils } = require('../../auth/authUtils');
+
 
 //Sign up
 
@@ -15,6 +17,12 @@ bạn phải tự mình bắt các lỗi bất đồng bộ và gọi next(error
 để chuyển lỗi đến middleware xử lý lỗi tiếp theo. Nhưng khi bạn sử dụng asyncHandle, nó sẽ tự động bắt và chuyển lỗi cho bạn, 
 làm cho mã nguồn của bạn gọn gàng và dễ đọc hơn.
 */
-router.post('/shop/signup', asyncHandle(accessController.signUp))
-router.post('/shop/login', asyncHandle(accessController.login))
+router.post('/shop/signup', asyncHandler(accessController.signUp))
+router.post('/shop/login', asyncHandler(accessController.login))
+
+// Authentication
+router.use(authenticationUtils)
+//logout
+router.post('/shop/logout', asyncHandler(accessController.logout))
+
 module.exports = router

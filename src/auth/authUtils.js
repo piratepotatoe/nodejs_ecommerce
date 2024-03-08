@@ -1,6 +1,15 @@
 'use strict';
 
 const JWT = require('jsonwebtoken');
+const asyncHandler = require('../helpers/asyncHandler');
+const { AuthFailtureError, NotFoundError } = require('../core/error.response');
+const { findByUserId   } = require('../services/keyToken.service');
+
+const HEADER = {
+    API_KEY: 'x-api-key',
+    CLIENT_ID : 'x-client-id',
+    AUTHORIZATION: 'authorization'
+}
 
 const createTokenPair = async (payload, publicKey, privateKey) => {
 
@@ -36,6 +45,45 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
     }
 }
 
+//authentication Utils
+
+const authenticationUtils = asyncHandler(async(req, res, next)=>{
+    /*
+    1. check if user is missing?
+    2. get access token
+    3. verify token
+    4. check if user exists in database
+    5. check keystore with this user id
+    6. if passed => return next()
+    api, client user id, access token cần check ba tham số này
+    */
+   //Step 1 - get user id 
+   const userId = req.headers[HEADER.CLIENT_ID]
+
+   console.log(`userId`, userId);
+   // nếu không mang theo client id thì return lỗi luôn
+   if(!userId) throw new AuthFailtureError('Invalid request')
+
+    //Step 2 Get keystore access
+    const keyStore = await findByUserId(userId)
+
+    if(!keyStore) throw new NotFoundError('Not found keystore')
+    // Step 3 Verify token
+    const accessToken = req.headers[HEADER.AUTHORIZATION]
+
+    if(!accessToken) throw new AuthFailtureError('Not found keystore')
+
+    try {
+        const decodedUser = JWT.verify(accessToken, keyStore.publicKey)
+        if(userId !== decodedUser.userId) throw new AuthFailtureError('Invalid user')
+        req.keyStore = keyStore
+        return next()
+    } catch (error) {
+        console.log('Authenticateion: ' + error.message);
+    }
+})
+
 module.exports = {
-    createTokenPair
+    createTokenPair,
+    authenticationUtils
 };

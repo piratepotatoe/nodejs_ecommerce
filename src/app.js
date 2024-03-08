@@ -36,9 +36,10 @@ app.use ((req, res, next) => {
 app.use ((error, req, res, next) => {
     const statusCode = error.status || 500 // HTML status code
     return res.status(statusCode).json({
-        status: 'error',
+        status: 'Error',
         code: statusCode,
-        message: error.message || 'Internal Server Error'
+        message: error.message || 'Internal Server Error',
+        
     })
 })
 // Example: app.use(errorHandler);

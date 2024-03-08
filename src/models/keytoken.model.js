@@ -11,17 +11,17 @@ var keyTokenSchema = new Schema({
         required: true,
         ref: 'Shop'
     },
+    privateKey: {
+        type: String,
+        required: true
+    },
     publicKey: {
         type: String,
         required: true
     }
-    ,
-    privateKey: {
-        type: String,
-        required: true
-    }
+
     , refreshTokensUsed: {
-        type: Array, 
+        type: Array,
         default: [] // refresh token đã được sử dụng
     },
     refreshToken: {

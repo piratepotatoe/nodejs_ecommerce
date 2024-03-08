@@ -34,12 +34,13 @@ app.use ((req, res, next) => {
 })
 // đây là function để handle error
 app.use ((error, req, res, next) => {
+    // return next()
     const statusCode = error.status || 500 // HTML status code
     return res.status(statusCode).json({
         status: 'Error',
         code: statusCode,
         message: error.message || 'Internal Server Error',
-        
+        e: error.statusCode
     })
 })
 // Example: app.use(errorHandler);

@@ -3,11 +3,12 @@
 const JWT = require('jsonwebtoken');
 const asyncHandler = require('../helpers/asyncHandler');
 const { AuthFailtureError, NotFoundError } = require('../core/error.response');
-const { findByUserId   } = require('../services/keyToken.service');
+const { findByUserId } = require('../services/keyToken.service');
+
 
 const HEADER = {
     API_KEY: 'x-api-key',
-    CLIENT_ID : 'x-client-id',
+    CLIENT_ID: 'x-client-id',
     AUTHORIZATION: 'authorization'
 }
 
@@ -15,14 +16,14 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
 
     try {
         // Note: JWT.sign is used synchronously here
-        
+
         const accessToken = await JWT.sign(payload, publicKey, {
-           // algorithm: 'RS256',
+            // algorithm: 'RS256',
             expiresIn: '2 days'
         });
 
         const refreshToken = await JWT.sign(payload, privateKey, {
-           // algorithm: 'RS256',
+            // algorithm: 'RS256',
             expiresIn: '7 days'
         });
 
@@ -39,7 +40,7 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
         return { accessToken, refreshToken };
     } catch (error) {
         console.error(`Error creating token pair: ${error.message}`);
-       
+
         // Ensure to handle this error appropriately in production code
         return null; // or throw new Error(error);
     }
@@ -47,7 +48,8 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
 
 //authentication Utils
 
-const authenticationUtils = asyncHandler(async(req, res, next)=>{
+const authenticationUtils = asyncHandler(async (req, res, next) => {
+
     /*
     1. check if user is missing?
     2. get access token
@@ -57,25 +59,33 @@ const authenticationUtils = asyncHandler(async(req, res, next)=>{
     6. if passed => return next()
     api, client user id, access token cần check ba tham số này
     */
-   //Step 1 - get user id 
-   const userId = req.headers[HEADER.CLIENT_ID]
+    //Step 1 - get user id 
+    const userId = req.headers[HEADER.CLIENT_ID]
 
-   console.log(`userId`, userId);
-   // nếu không mang theo client id thì return lỗi luôn
-   if(!userId) throw new AuthFailtureError('Invalid request')
+    console.log(`userId`, userId);
+
+    // nếu không mang theo client id thì return lỗi luôn
+    if (!userId) throw new AuthFailtureError('Invalid request')
 
     //Step 2 Get keystore access
     const keyStore = await findByUserId(userId)
 
-    if(!keyStore) throw new NotFoundError('Not found keystore')
+    if (!keyStore) throw new NotFoundError('Not found keystore')
     // Step 3 Verify token
     const accessToken = req.headers[HEADER.AUTHORIZATION]
 
-    if(!accessToken) throw new AuthFailtureError('Not found keystore')
+    console.log(`accessToken`, accessToken);
+    console.log('Keystore '+keyStore.publicKey)
 
+    if (!accessToken) throw new AuthFailtureError('Not found keystore')
+    
     try {
+        
         const decodedUser = JWT.verify(accessToken, keyStore.publicKey)
-        if(userId !== decodedUser.userId) throw new AuthFailtureError('Invalid user')
+        console.log(`decodedUser`, decodedUser);
+        return next()
+        if (userId !== decodedUser.userId) throw new AuthFailtureError('Invalid user')
+
         req.keyStore = keyStore
         return next()
     } catch (error) {

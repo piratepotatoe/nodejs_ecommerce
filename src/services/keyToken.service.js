@@ -1,11 +1,12 @@
 'use strict';
-const keyTokenModel =  require('../models/keytoken.model')
+const keytokenModel = require('../models/keytoken.model');
 // const { Types } = require('mongoose')
-const { Types: { ObjectId } } = require('mongoose')
+const { Types: { ObjectId }, Types } = require('mongoose')
 
 class KeyTokenService {
     // Trong class KeyTokenService, yêu cầu 2 parameter, 1 là user id, 2 là public key, tuy nhiên,
     // cần thêm cả private key nữa
+
     static createKeyToken = async ({userId, publicKey, privateKey, refreshToken}) => { 
         try {
 
@@ -13,7 +14,7 @@ class KeyTokenService {
             update ={
                 publicKey,
                 privateKey,
-                refreshTokenUsed: [],
+                refreshTokensUsed: [],
                 refreshToken
             }, options = {
                 upsert: true,
@@ -38,14 +39,26 @@ class KeyTokenService {
 
      static findByUserId = async (userId) => {
         // let a=  keytokenModel.findOne({})
-        return await keyTokenModel.findOne({ user: new ObjectId(userId) }).lean();
+        //return await keyTokenModel.findOne({ user: new ObjectId(userId) }).lean();
+        return keytokenModel.findOne({user: new ObjectId(userId)}).lean();
     }
 
-    static removeKeyById = async ({id}) => {
-        return await keyTokenModel.deleteOne({ _id: new ObjectId(id) });
+    static removeKeyById = async (id) => {
+        return keytokenModel.deleteOne({_id: new ObjectId(id)});
     }
    
-     
+    static findByRefreshTokenUsed = async (refreshToken) =>{
+        return await keytokenModel.findOne({refreshTokensUsed : refreshToken}).lean()
+    }
+
+    static findByRefreshToken = async (refreshToken) =>{
+        return await keytokenModel.findOne({refreshToken })
+    }
+
+    static deleteKeyById = async (userId) =>{
+        return await keytokenModel.findByIdAndDelete({user:userId})
+    }
+
     
 }
 

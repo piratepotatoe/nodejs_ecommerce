@@ -1,14 +1,12 @@
 ### signup
 @url_dev = http://localhost:3056/v1/api
 
-POST {{url_dev}}/shop/logout
+POST {{url_dev}}/shop/signup
 Content-Type: application/json
-x-api-key:c94ddc10ac875509ea413c321302b4ef32b8d224657165c662fe23ccd7be30c5a62efd3d29282a582e65f7fdb27fad49cc3f7f49cfa7694fab3bc1077ac9e950
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWVhOGZmNDdhMTI4NzBjOTA5MDI5M2IiLCJlbWFpbCI6Im5pbmh2aDVnbWFpbC5jb20iLCJpYXQiOjE3MDk4NzEwOTIsImV4cCI6MTcxMDA0Mzg5Mn0.gddQSNeWmEcPpwUD8i0m66IXPBHMSA166PhRTxPE4aI
-x-client-id: 65ea8ff47a12870c9090293b
+x-api-key: 3e61d6cec9a24d865514db8142d9111d88cad2ac1a7d8d7630b3a8f218dd197c7e99ad53806f08de938a09bbda86b18f593f00403e798803a1ad3a9ac79966e3
 
 {
-    "name":"ninhvh5",
-    "email":"ninhvh5gmail.com",
+    "name":"ninhvh10",
+    "email":"ninhvh11gmail.com",
     "password":"12345abc"
 }

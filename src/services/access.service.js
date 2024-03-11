@@ -5,13 +5,14 @@ const bcrypt = require('bcrypt')
 //const crypto = require('crypto')
 const crypto = require('node:crypto') // có thể sử dụng được từ node version 19 bằng cách khai báo như này
 
-const { createTokenPair } = require("../auth/authUtils")
+const { createTokenPair, verifyJWT } = require("../auth/authUtils")
 const { getInfodata } = require("../utils");
-const { BadRequestError, ConflictRequestError, AuthFailtureError } = require("../core/error.response");
+const { BadRequestError, ConflictRequestError, AuthFailtureError, ForbiddenError} = require("../core/error.response");
 const { findByEmail } = require("./shop.service");
 const { create } = require("lodash");
 const KeyTokenService = require("./keyToken.service");
-
+const {findByRefreshTokenUsed} = require("./keyToken.service");
+const KeyTokenModel = require("../models/keytoken.model");
 const RoleShop = {
     SHOP: 'SHOP',
     WRITER: 'WRITER',
@@ -24,6 +25,57 @@ const RoleShop = {
 // 
 class AccessService {
 
+    static handlerRefreshToken = async (refreshToken) =>{
+        const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken)
+        if (foundToken){
+            //decode who they are?
+            const {userId, email} = await verifyJWT(refreshToken, foundToken.privateKey)
+            console.log(`[1]--`,{userId, email})
+            //delete
+            await KeyTokenService.deleteKeyById(userId)
+            throw new ForbiddenError('Something wrong happens !! Please relogin')
+        }
+
+        const holderToken = await KeyTokenService.findByRefreshToken(refreshToken)
+
+        if (!holderToken) throw new AuthFailtureError('Shop not registered 1')
+
+        //verify token
+        const {userId, email} = await verifyJWT(refreshToken, holderToken.privateKey)
+        console.log(`[2]--`,{userId, email})
+
+        //check userID
+        const foundShop = await findByEmail({email})
+
+        if (!foundShop) throw new AuthFailtureError('Shop not registered 2')
+
+        //create new Pair Token
+        const tokens = await createTokenPair({userId,email}, holderToken.publicKey, holderToken.privateKey)
+
+        //update token
+        // await holderToken.update({
+        //     $set:{
+        //         refreshToken: tokens.refreshToken
+        //     },
+        //     $addToSet:{
+        //         refreshTokensUsed: refreshToken // đã được sử dụng để lấy token mới
+        //     }
+        // })
+
+        await KeyTokenModel.updateOne({ _id: holderToken._id }, {
+            $set: {
+              refreshToken: tokens.refreshToken
+            },
+            $addToSet: {
+              refreshTokensUsed: refreshToken
+            }
+          });
+
+        return{
+            user: {userId, email},
+            tokens
+        }
+    }
 
     static logout = async (keyStore) => {
         const deleteKey = await KeyTokenService.removeKeyById(keyStore._id)
@@ -58,8 +110,8 @@ class AccessService {
         const tokens = await createTokenPair({ userId, email }, publicKey, privateKey)
         // save private key and public key 
         await KeyTokenService.createKeyToken({
-            userId, publicKey, privateKey,
-            refreshToken: tokens.refreshToken
+        refreshToken:tokens.refreshToken,
+        privateKey, publicKey, userId
 
         })
         // return khi login thành công
@@ -73,7 +125,7 @@ class AccessService {
         // try {
 
         //step1: check if email exist   
-        const holderShop = await shopModel.findOne({ email }).lean()
+        const holderShop = await shopModel.findOne({ email })
 
         if (holderShop) {
             throw new ConflictRequestError('Error: Shop Already registered')

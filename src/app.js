@@ -1,40 +1,49 @@
+require('dotenv').config();
+
 const compression = require('compression');
 const express = require('express');
-const { default: helmet } = require('helmet');
+const helmet = require('helmet'); // Corrected helmet import
 const morgan = require('morgan');
 const app = express();
 
+
+
 // Initialize middlewares
-// Example: app.use(middlewareFunction);
-app.use(morgan("dev"))
-//app.use(morgan("combined"))
-app.use(helmet())
-app.use(compression())
-
-
-
-
+app.use(morgan("dev"));
+app.use(helmet());
+app.use(compression());
+app.use(express.json())
+app.use(express.urlencoded({
+    extended: true
+}))
 // Initialize database
-
-require('./dbs/init.mongodo')
-const { countConnect } = require('./helpers/check.connect')
-countConnect()
-// Example: databaseConnection();
-
-
-
-
+require('./dbs/init.mongodb'); // Corrected the file name if it was a typo
+const { checkOverload, countConnect } = require('./helpers/check.connect');
+checkOverload();
+countConnect();
 
 // Initialize routers
-// Example: app.use('/api', apiRouter);
-app.get('/', (req, res, next) =>{
-    const strCompress= 'hello daring fox'
-    return res.status(200).json({
-        message:'Welcome Daring Fox',
-        metadata: strCompress.repeat(10000)
+app.use('/',require('./routers'))
+
+// Handling errors
+//middleware error
+app.use ((req, res, next) => {
+    const error = new Error('Not Found')
+    error.status = 404
+    next(error)
+})
+// đây là function để handle error
+app.use ((error, req, res, next) => {
+    // return next()
+    const statusCode = error.status || 500 // HTML status code
+    return res.status(statusCode).json({
+        status: 'Error',
+        code: statusCode,
+        stack: error.stack,
+        message: error.message || 'Internal Server Error',
+        e: error.statusCode
     })
 })
-// Handling errors
 // Example: app.use(errorHandler);
 
-module.exports = app; // Corrected this line
+module.exports = app; // Export the Express app

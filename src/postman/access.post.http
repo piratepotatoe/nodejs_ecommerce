@@ -1,0 +1,23 @@
+### signup
+@url_dev = http://localhost:3056/v1/api
+
+POST {{url_dev}}/shop/product
+Content-Type: application/json
+x-api-key: 3e61d6cec9a24d865514db8142d9111d88cad2ac1a7d8d7630b3a8f218dd197c7e99ad53806f08de938a09bbda86b18f593f00403e798803a1ad3a9ac79966e3
+x-client-id: 65eeb0cbaf21eea8516fd27e
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWVlYjBjYmFmMjFlZWE4NTE2ZmQyN2UiLCJlbWFpbCI6Im5pbmh2aDExZ21haWwuY29tIiwiaWF0IjoxNzEwMTUwMjM4LCJleHAiOjE3MTAzMjMwMzh9.iihSPEYjvopPMx9fUTOB63ym-GEKTG_1yM8Y6H-O9nM
+
+{
+  "product_name" : "new jean",
+  "product_description" : "this is a jean",
+  "product_price" : 5000,
+  "product_thumb" : "product thumb",
+  "product_quantity": 10,
+  "product_type" : "Clothing",
+  "product_shop" : "65eeb0cbaf21eea8516fd27e",
+  "product_attributes" : {
+    "brand":"Levis",
+    "size" : "L",
+    "material":"Denim"
+  }
+}

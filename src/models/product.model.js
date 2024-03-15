@@ -37,7 +37,8 @@ const clothingSchema = new Schema({
 const electronicSchema = new Schema({
     manufacturer: { type: String, required: true },
     model: String, //Section 11: fix 1 size trước, các section sau sẽ update nhiều size
-    color: String
+    color: String,
+    product_shop:{type: Schema.Types.ObjectId, ref:'Shop'}
 
 }, {
     collection: 'electronics',

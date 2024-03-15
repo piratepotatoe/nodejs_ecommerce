@@ -4,10 +4,12 @@ const {SuccessResponse} = require("../core/success.response")
 
 class ProductController{
     createProduct = async (req, res,next) =>{
-        console.log(req.body)
+        console.log("user id req body", req.user)
         new SuccessResponse({
             message:"Successfully create new product",
-            metadata: await ProductService.createProduct(req.body.product_type, req.body)
+            metadata: await ProductService.createProduct(req.body.product_type,{...req.body,
+                product_shop: req.user.userId
+            })
     }).send(res)
 }
 }

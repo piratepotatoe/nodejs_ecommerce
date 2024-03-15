@@ -52,8 +52,8 @@ class Product {
         this.product_attributes = product_attributes
     }
     //create product với những thông tin default bên trên
-    async createProduct(){
-        return await product.create(this)
+    async createProduct(product_id){
+        return await product.create({...this, _id: product_id})
     }
 }
 
@@ -75,12 +75,16 @@ class Clothing extends Product{
 
 class Electronic extends Product{
     async createProduct(){
-        const newElectronic = await electronic.create(this.product_attributes)
+        const newElectronic = await electronic.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop
+        })
         if (!newElectronic) return new BadRequestError('create new Electronic error')
 
         // nếu thành công thì khởi tạo clothing
         // super ở đây chính là Product đã khai báo ở bên product model
-        const newProduct = await super.createProduct()
+        // truyền id vào
+        const newProduct = await super.createProduct(newElectronic._id)
         if (!newProduct) return new BadRequestError('create new Product Electronic error')
 
         return newProduct

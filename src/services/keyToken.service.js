@@ -40,7 +40,7 @@ class KeyTokenService {
      static findByUserId = async (userId) => {
         // let a=  keytokenModel.findOne({})
         //return await keyTokenModel.findOne({ user: new ObjectId(userId) }).lean();
-        return keytokenModel.findOne({user: new ObjectId(userId)}).lean();
+        return keytokenModel.findOne({user: new ObjectId(userId)})
     }
 
     static removeKeyById = async (id) => {
@@ -55,9 +55,10 @@ class KeyTokenService {
         return await keytokenModel.findOne({refreshToken })
     }
 
-    static deleteKeyById = async (userId) =>{
-        return await keytokenModel.findByIdAndDelete({user:userId})
+    static deleteKeyById = async (userId) => {
+        return await keytokenModel.findByIdAndDelete(userId);
     }
+    
 
     
 }

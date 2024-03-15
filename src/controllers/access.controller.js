@@ -5,10 +5,20 @@ const { OK, CREATED, SuccessResponse } = require("../core/success.response")
 
 class AccessController {
     handleRefreshToken = async (req, res, next) =>{
+        // if (!req.user) {
+        //     return res.status(400).send("User information is missing");
+        // }
+        //V2
         new SuccessResponse({
             message:'Get token success',
-            metadata: await AccessService.handlerRefreshToken(req.body.refreshToken)
-        }).send(res)
+            metadata: await AccessService.handlerRefreshTokenV2({
+                refreshToken: req.refreshToken,
+                user: req.user,
+                keyStore: req.keyStore
+            })
+        })
+
+       
     }
 
     logout = async (req, res, next) => {

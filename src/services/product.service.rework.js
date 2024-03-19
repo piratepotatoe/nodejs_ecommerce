@@ -3,7 +3,7 @@
 
 const {product,clothing,electronic, furniture} = require('../models/product.model')
 const {BadRequestError} = require("../core/error.response");
-const {findAllDraftForShop} = require("../models/repositories/product.repo");
+const {findAllDraftForShop, publishProductByShop, findAllPublishForShop} = require("../models/repositories/product.repo");
 
 
 
@@ -27,12 +27,45 @@ class ProductFactory{
         return new productClass(payload).createProduct()
     }
 
-    //Section 16: Get a list of seller draft
+    /**
+     * Section 16: Get a list of seller draft
+     * findAllPublishedForShop - tìm tất cả những sản phẩm đã được publish theo 1 shop
+     * @param {String} product_shop
+     * @param {Number} limit
+     * @param {Number} skip
+     * @param {boolean} isDraft là true
+     * @returns {Promise<*>} tất cả những product publish theo 1 shop
+     */
+
     static async findAllDraftsForShop({product_shop, limit = 50, skip=0}){
         const query = { product_shop, isDraft:true}
         return await findAllDraftForShop({query, limit, skip})
+    }
+
+    /**
+     * findAllPublishedForShop - tìm tất cả những sản phẩm đã được publish theo 1 shop
+     * @param {String} product_shop
+     * @param {Number} limit
+     * @param {Number} skip
+     * @param {boolean} isPublished là true
+     * @returns {Promise<*>} tất cả những product publish theo 1 shop
+     */
+    static async findAllPublishedForShop({product_shop, limit = 50, skip=0}){
+        const query = { product_shop, isPublished:true}
+        return await findAllPublishForShop({query, limit, skip})
 
     }
+
+    /**
+     * Put
+     * @param {String} product_shop Chắc chắn phải là product_shop thì mới update được
+     * @param {String} product_id
+     */
+    static async publishProductByShop({product_shop, product_id}){
+       return await publishProductByShop({product_shop, product_id})
+    }
+
+
 
 
     // Version 1
@@ -51,15 +84,16 @@ class ProductFactory{
 //define base class
 // chứa những tham số chung
 
-/*
-    product_name: { type: String, required: true },
-    product_thumb: { type: String, required: true },
-    product_description: String,
-    product_price: { type: Number, required: true },
-    product_quantity: { type: Number, required: true },
-    product_type: { type: String, required: true, enum: ['Electronic', 'Clothing', 'Furniture'] },
-    product_shop: {type: Schema.Types.ObjectId, ref: 'Shop'},
-    product_attribute: { type: Schema.Types.Mixed, required: true }
+/**
+ * Class Product
+ * @param {String} product_name
+ * @param {String} product_thumb
+ * @param {String} product_description
+ * @param {Number} product_price
+ * @param {Number} product_quantity
+ * @param {String} product_type
+ * @param {Schema.Types.ObjectId} product_shop
+ * @param {Schema.Types.Mixed} product_attributes
  */
 class Product {
     constructor({
@@ -80,8 +114,17 @@ class Product {
     }
 }
 
-//Define sub-class Clothing extend từ Product
-
+/**
+ * Define sub-class Clothing extend từ Product
+ * @param {String} product_name
+ * @param {String} product_thumb
+ * @param {String} product_description
+ * @param {Number} product_price
+ * @param {Number} product_quantity
+ * @param {String} product_type
+ * @param {Schema.Types.ObjectId} product_shop
+ * @param {Schema.Types.Mixed} product_attributes
+ */
 class Clothing extends Product{
     async createProduct(){
         const newClothing = await clothing.create(this.product_attributes)

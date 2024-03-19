@@ -1,8 +1,9 @@
 "use strict";
 
 
-const {product,clothing,electronic} = require('../models/product.model')
+const {product,clothing,electronic, furniture} = require('../models/product.model')
 const {BadRequestError} = require("../core/error.response");
+const {findAllDraftForShop} = require("../models/repositories/product.repo");
 
 
 
@@ -13,16 +14,38 @@ class ProductFactory{
     type: có thể là clothing, electronics, vvv
     payload: là dữ liệu
      */
-    static async createProduct(type, payload){
-        switch (type){
-            case 'Electronic':
-                return new Electronic(payload).createProduct()
-            case 'Clothing':
-                return new Clothing(payload).createProduct()
-            default:
-                throw new BadRequestError(`Invalid Product Types ${type}`)
-        }
+    static productRegistry = {}
+
+    static registerProductType(type, classRef){
+        ProductFactory.productRegistry[type] = classRef
     }
+
+
+    static async createProduct(type, payload){
+        const productClass = ProductFactory.productRegistry[type]
+        if (!productClass) throw new BadRequestError(`Product Type undefined ${type}` )
+        return new productClass(payload).createProduct()
+    }
+
+    //Section 16: Get a list of seller draft
+    static async findAllDraftsForShop({product_shop, limit = 50, skip=0}){
+        const query = { product_shop, isDraft:true}
+        return await findAllDraftForShop({query, limit, skip})
+
+    }
+
+
+    // Version 1
+    // static async createProduct(type, payload){
+    //     switch (type){
+    //         case 'Electronic':
+    //             return new Electronic(payload).createProduct()
+    //         case 'Clothing':
+    //             return new Clothing(payload).createProduct()
+    //         default:
+    //             throw new BadRequestError(`Invalid Product Types ${type}`)
+    //     }
+    // }
 }
 
 //define base class
@@ -66,7 +89,7 @@ class Clothing extends Product{
 
         // nếu thành công thì khởi tạo clothing
         // super ở đây chính là Product đã khai báo ở bên product model
-        const newProduct = await super.createProduct()
+        const newProduct = await super.createProduct(newClothing._id)
         if (!newProduct) return new BadRequestError('create new Product Clothing error')
 
         return newProduct
@@ -90,5 +113,25 @@ class Electronic extends Product{
         return newProduct
     }
 }
+
+
+class Furniture extends Product{
+    async createProduct(){
+        const newFurniture = await furniture.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop
+        })
+        if (!newFurniture) throw new BadRequestError('Fail to create new furniture')
+        const newProduct = await super.createProduct(newFurniture._id)
+        if(!newProduct) throw new BadRequestError('Fail to create new Product Furniture Error')
+        return newProduct
+    }
+}
+
+// register product types
+
+ProductFactory.registerProductType('Electronic', Electronic)
+ProductFactory.registerProductType('Clothing', Clothing)
+ProductFactory.registerProductType('Furniture', Furniture)
 
 module.exports = ProductFactory

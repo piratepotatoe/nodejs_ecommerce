@@ -11,5 +11,6 @@ const { authenticationV2 } = require('../../auth/authUtils');
 router.use(authenticationV2)
 //logout
 router.post('',asyncHandler(productController.createProduct) )
-
+/// QUERY ///
+router.get('/drafts/all', asyncHandler(productController.getAllDraftsForShop))
 module.exports = router

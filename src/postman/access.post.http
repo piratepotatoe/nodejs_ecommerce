@@ -8,16 +8,15 @@ x-client-id: 65eeb0cbaf21eea8516fd27e
 authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWVlYjBjYmFmMjFlZWE4NTE2ZmQyN2UiLCJlbWFpbCI6Im5pbmh2aDExZ21haWwuY29tIiwiaWF0IjoxNzEwMTUwMjM4LCJleHAiOjE3MTAzMjMwMzh9.iihSPEYjvopPMx9fUTOB63ym-GEKTG_1yM8Y6H-O9nM
 
 {
-  "product_name" : "new jean",
-  "product_description" : "this is a jean",
-  "product_price" : 5000,
+  "product_name" : "Sofa",
+  "product_description" : "Hoàn Mỹ",
+  "product_price" : 1000,
   "product_thumb" : "product thumb",
-  "product_quantity": 10,
-  "product_type" : "Clothing",
-  "product_shop" : "65eeb0cbaf21eea8516fd27e",
+  "product_quantity": 30,
+  "product_type" : "Furniture",
   "product_attributes" : {
-    "brand":"Levis",
-    "size" : "L",
-    "material":"Denim"
+    "manufacturer":"Hoan My",
+    "model" : "52m",
+    "color":"White"
   }
 }

@@ -3,7 +3,7 @@
 
 const {product,clothing,electronic, furniture} = require('../models/product.model')
 const {BadRequestError} = require("../core/error.response");
-const {findAllDraftForShop, publishProductByShop, findAllPublishForShop} = require("../models/repositories/product.repo");
+const {findAllDraftForShop, publishProductByShop, findAllPublishForShop, unPublishProductByShop, searchProductByUser} = require("../models/repositories/product.repo");
 
 
 
@@ -56,8 +56,17 @@ class ProductFactory{
 
     }
 
+
+    /** User - searchProduct()
+     * đây là action performed by user, vậy nên không cần verify chỉ cần key search để hiện là được
+     * required product_id
+     */
+    static async searchProducts({keySearch}){
+        return await searchProductByUser({keySearch})
+    }
+
     /**
-     * Put
+     * Publish product by a shop
      * @param {String} product_shop Chắc chắn phải là product_shop thì mới update được
      * @param {String} product_id
      */
@@ -65,7 +74,9 @@ class ProductFactory{
        return await publishProductByShop({product_shop, product_id})
     }
 
-
+    static async unPublishProductByShop({product_shop, product_id}){
+        return await unPublishProductByShop({product_shop, product_id})
+    }
 
 
     // Version 1

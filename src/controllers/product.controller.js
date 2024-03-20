@@ -30,7 +30,13 @@ class ProductController{
 
     }
 
-
+    /**
+     * Publish 1 Product từ draft sang trạng thái publish
+     * @param req
+     * @param res
+     * @param next
+     * @returns {Promise<void>}
+     */
     publishProductByShop = async (req, res,next) =>{
         new SuccessResponse({
             message:'Publish Product Success',
@@ -41,6 +47,17 @@ class ProductController{
         }).send(res)
 
     }
+
+    unPublishProductByShop = async (req,res,next) =>{
+        new SuccessResponse({
+            message: 'Unpublish Product success',
+            metadata: await ProductServiceV2.unPublishProductByShop({
+                product_shop: req.user.userId,
+                product_id: req.params.id
+            })
+        }).send(res)
+    }
+
 
 
     /**
@@ -68,5 +85,16 @@ class ProductController{
             })
         }).send(res)
     }
+
+    getListSearchProduct = async (req,res,next) => {
+        console.log(req.params)
+        new SuccessResponse({
+            message:'Get List Search Product Success!',
+            metadata: await ProductServiceV2.searchProducts(req.params)
+        }).send(res)
+    }
+
+
+
 }
 module.exports = new ProductController()

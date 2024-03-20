@@ -34,6 +34,11 @@ const productSchema = new Schema({
         timestamps: true
     }
 )
+/**
+ * Đánh index để cho user search
+ */
+productSchema.index({product_name: 'text', product_description: 'text'})
+
 
 // Document middleware: runs before .save() and .create()...
 productSchema.pre('save', function(next){
